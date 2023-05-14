@@ -11,6 +11,7 @@
 		049249DB2A118B550007B45E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049249DA2A118B550007B45E /* ContentView.swift */; };
 		049249DD2A118B570007B45E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 049249DC2A118B570007B45E /* Assets.xcassets */; };
 		049249E02A118B570007B45E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 049249DF2A118B570007B45E /* Preview Assets.xcassets */; };
+		049249F82A1196330007B45E /* FluidGradient in Frameworks */ = {isa = PBXBuildFile; productRef = 049249F72A1196330007B45E /* FluidGradient */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				049249F82A1196330007B45E /* FluidGradient in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +85,9 @@
 			dependencies = (
 			);
 			name = EdutainmentApp;
+			packageProductDependencies = (
+				049249F72A1196330007B45E /* FluidGradient */,
+			);
 			productName = EdutainmentApp;
 			productReference = 049249D52A118B550007B45E /* EdutainmentApp.app */;
 			productType = "com.apple.product-type.application";
@@ -111,6 +116,9 @@
 				Base,
 			);
 			mainGroup = 049249CC2A118B550007B45E;
+			packageReferences = (
+				049249F62A1196330007B45E /* XCRemoteSwiftPackageReference "FluidGradient" */,
+			);
 			productRefGroup = 049249D62A118B550007B45E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -275,6 +283,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -304,6 +313,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -339,6 +349,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		049249F62A1196330007B45E /* XCRemoteSwiftPackageReference "FluidGradient" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Cindori/FluidGradient.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		049249F72A1196330007B45E /* FluidGradient */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 049249F62A1196330007B45E /* XCRemoteSwiftPackageReference "FluidGradient" */;
+			productName = FluidGradient;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 049249CD2A118B550007B45E /* Project object */;
 }

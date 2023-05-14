@@ -7,16 +7,18 @@
 
 import SwiftUI
 
+import FluidGradient
+
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
-        }
-        .padding()
-    }
+          FluidGradient(blobs: [.red, .green, .blue],
+                        highlights: [.yellow, .orange, .purple],
+                        speed: 1.0,
+                        blur: 0.75)
+            .background(.quaternary)
+            .ignoresSafeArea()
+      }
+        
 }
 
 struct ContentView_Previews: PreviewProvider {
