@@ -10,6 +10,11 @@ import SwiftUI
 import FluidGradient
 
 struct ContentView: View {
+    @State private var titleWidth: CGFloat = 200
+    @State private var opacity: Double = 1
+    @State private var animationAmount1 = 0.0
+    @State private var animationAmount2 = 0.0
+    @State private var animationAmount3 = 0.0
     @State private var  startOfTheGame = false
     @State private var  countOfQuestions = 0
     @State private var  score = 0
@@ -23,7 +28,6 @@ struct ContentView: View {
     @State private var endOfTheGame = false
     @State private var randomNumber = Int.random(in: 2...12)
     @State private var  range = 2
-    let questions = [5,10,20]
     let background = "square_nodetailsOutline"
     
     init() {
@@ -57,24 +61,71 @@ struct ContentView: View {
                         )
                     
                     Section {
-                        HStack {
-                            ForEach(0..<3) { number in
-                                Button {
-                                    startGame(number)
-                                } label: {
-                                    HStack {
-                                        Spacer()
-                                        Text(String(questions[number]))
-                                            .frame(width:40)
-                                            .padding()
-                                            .background()
-                                            .clipShape(Circle())
-                                        Spacer()
-                                    }
+                        HStack(spacing: 30) {
+                            Spacer()
+                            Button {
+                                
+                            } label: {
+                                Text("5")
+                                    .frame(width:40)
+                                    .padding()
+                                    .background()
+                                    .clipShape(Circle())
+                            }.rotation3DEffect(.degrees(animationAmount1), axis: (x: 0, y: 1, z: 0))
+                            .onTapGesture {
+                                withAnimation(.interpolatingSpring(stiffness: 7, damping: 4)) {
+                                    animationAmount1 += 360
                                 }
-                                .disabled(countOfQuestions >= 1)
+                                goal1 = 5
+                                countOfQuestions = 5
+                                range = Int.random(in: 2...range)
+                                question = "What is \(range) x \(randomNumber)?"
                             }
-                        }
+                            .disabled(countOfQuestions >= 1)
+                            Button {
+                        
+                            } label: {
+                                Text("10")
+                                    .frame(width:40)
+                                    .padding()
+                                    .background()
+                                    .clipShape(Circle())
+                            }
+                            .rotation3DEffect(.degrees(animationAmount2), axis: (x: 0, y: 1, z: 0))
+                            .onTapGesture {
+                                withAnimation(.interpolatingSpring(stiffness: 7, damping: 4)) {
+                                    animationAmount2 += 360
+                                }
+                                goal2 = 10
+                                range = Int.random(in: 2...range)
+                                countOfQuestions = 10
+                                question = "What is \( range) x \(randomNumber)?"
+                            }
+                            .disabled(countOfQuestions >= 1)
+                            Button {
+                               
+                            } label: {
+                                Text("20")
+                                    .frame(width:40)
+                                    .padding()
+                                    .background()
+                                    .clipShape(Circle())
+                            }
+                            .rotation3DEffect(.degrees(animationAmount3), axis: (x: 0, y: 1, z: 0))
+                            .onTapGesture {
+                                withAnimation(.interpolatingSpring(stiffness: 7, damping: 4)) {
+                                    animationAmount3 += 360
+                                }
+                                goal3 = 20
+                                countOfQuestions = 20
+                                range = Int.random(in: 2...range)
+                                question = "What is \(range) x \(randomNumber)?"
+                            }
+                            .disabled(countOfQuestions >= 1)
+                            Spacer()
+
+                            }
+                        
                     } header: {
                         HStack {
                             Spacer()
@@ -98,12 +149,29 @@ struct ContentView: View {
                         HStack() {
                             Spacer()
                                 Text(question)
+                                .opacity(opacity)
+                                .transition(.opacity)
+                                .onChange(of: question) { newValue in
+                                    withAnimation(.easeIn(duration: 0)) {
+                                        self.opacity = 0
+                                    }
+                                    withAnimation(.easeIn(duration: 0.5).delay(0.5)) {
+                                        self.opacity = 1
+                                    }
+                                    withAnimation(.easeInOut(duration: 0.5)) {
+                                        self.titleWidth = 20
+                                    }
+                                    withAnimation(.easeInOut(duration: 0.5).delay(0.5)) {
+                                        self.titleWidth = 200
+                                    }
+                                    
+                                }
                             Spacer()
                             }
                     } header: {
                         HStack {
                             Spacer()
-                            Text("Questions left \(startOfTheGame ? countOfQuestions : 0)")
+                            Text("Questions left \(countOfQuestions)")
                                 .font(.headline.weight(.bold))
                                 .foregroundColor(.black)
                             Spacer()
@@ -113,12 +181,16 @@ struct ContentView: View {
                     .listRowBackground(
                         Rectangle()
                             .fill(.thinMaterial)
-                            .frame(width: 365, height: 40)
+                            .frame(width: titleWidth, height: 40)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
+                           
                         )
                     
                     Section {
-                        TextField("Answer",value: $answer, format: .number)
+                        HStack(spacing: 150) {
+                            Spacer()
+                            TextField("Answer",value: $answer, format: .number)
+                        }
                     } header: {
                         HStack {
                             Spacer()
@@ -128,11 +200,12 @@ struct ContentView: View {
                             Spacer()
                         }
                     }
+                    .disabled(countOfQuestions < 1)
                     .onSubmit(finalAnswer)
                     .listRowBackground(
                         Rectangle()
                             .fill(.thinMaterial)
-                            .frame(width: 365, height: 40)
+                            .frame(width: 200, height: 40)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                         )
                     .listRowSeparator(.hidden)
@@ -157,27 +230,6 @@ struct ContentView: View {
             }
         }
     
-    func startGame(_ number: Int) {
-        if questions[number] == 5 {
-            goal1 = 5
-            countOfQuestions = 5
-            randomNumber = Int.random(in: 2...12)
-            question = "What is \(Int.random(in:2...range)) x \((randomNumber))?"
-        }
-        if  questions[number] == 10 {
-            randomNumber = Int.random(in: 2...12)
-            goal2 = 10
-            countOfQuestions = 10
-            question = "What is \( Int.random(in:2...range)) x \((randomNumber))?"
-        }
-        if  questions[number] == 20 {
-            goal3 = 20
-            countOfQuestions = 20
-            randomNumber = Int.random(in: 2...12)
-            question = "What is \(Int.random(in:2...range)) x \((randomNumber))?"
-        }
-startOfTheGame = true
-    }
     func finalAnswer() {
         let result = answer
         if result == (range * randomNumber) {
@@ -204,7 +256,7 @@ startOfTheGame = true
     func askNewQuestion() {
         range = Int.random(in: 2...range)
         randomNumber = Int.random(in: 2...12)
-        question = "What is \( Int.random(in:2...range)) x \((randomNumber))?"
+        question = "What is \(range) x \(randomNumber)?"
     }
     func resetGame() {
         question = ""
