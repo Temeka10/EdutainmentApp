@@ -10,16 +10,18 @@ import SwiftUI
 import FluidGradient
 
 struct ContentView: View {
-    @State private var  rightOrNot = false
+    @State private var  startOfTheGame = false
+    @State private var  countOfQuestions = 0
     @State private var  score = 0
-    @State private var  goal = 0
+    @State private var  goal1 = -1
+    @State private var  goal2 = -1
+    @State private var  goal3 = -1
     @State private var  answer = 0
     @State private var  question = ""
     @State private var errorTitle = ""
     @State private var showingAlert = false
     @State private var endOfTheGame = false
     @State private var randomNumber = Int.random(in: 2...12)
-    @State private var randomNumber2 = Int.random(in: 2...12)
     @State private var  range = 2
     let questions = [5,10,20]
     let background = "square_nodetailsOutline"
@@ -36,31 +38,7 @@ struct ContentView: View {
                 List {
                     
                         Section {
-                            HStack {
-                                Spacer()
-                                Button {
-                                    if range <= 12 || range >= 3 {
-                                        range -= 1
-                                    }
-                                } label: {
-                                    Image(systemName: "minus.circle")
-                                        .font(.system(size: 40))
-                                        
-                                }
-                                .disabled(goal >= 1)
-                                Text("Up to \(range)")
-                             
-                                    Button {
-                                        if range == 2 {
-                                            range += 1
-                                        }
-                                    } label: {
-                                        Image(systemName: "plus.circle")
-                                            .font(.system(size: 40))
-                                    }
-                                    .disabled(goal >= 1)
-                                Spacer()
-                            }
+                            Stepper("Up to \(range)", value: $range, in: 2...12)
                         } header: {
                             HStack {
                                 Spacer()
@@ -74,7 +52,7 @@ struct ContentView: View {
                         .listRowBackground(
                             Rectangle()
                                 .fill(.thinMaterial)
-                                .frame(width: 200)
+                                .frame(width: 365)
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                         )
                     
@@ -94,7 +72,7 @@ struct ContentView: View {
                                         Spacer()
                                     }
                                 }
-                                .disabled(goal >= 1)
+                                .disabled(countOfQuestions >= 1)
                             }
                         }
                     } header: {
@@ -125,7 +103,7 @@ struct ContentView: View {
                     } header: {
                         HStack {
                             Spacer()
-                            Text("Question")
+                            Text("Questions left \(startOfTheGame ? countOfQuestions : 0)")
                                 .font(.headline.weight(.bold))
                                 .foregroundColor(.black)
                             Spacer()
@@ -150,6 +128,7 @@ struct ContentView: View {
                             Spacer()
                         }
                     }
+                    .onSubmit(finalAnswer)
                     .listRowBackground(
                         Rectangle()
                             .fill(.thinMaterial)
@@ -158,13 +137,12 @@ struct ContentView: View {
                         )
                     .listRowSeparator(.hidden)
                         
-                } 
-                   
-                    
+                }
                     .listStyle(.plain)
                     .navigationBarHidden(true)
                     
                 }
+         
             .alert(errorTitle, isPresented: $showingAlert) {
                 Button("Continue", action: askNewQuestion)
             } message: {
@@ -180,40 +158,62 @@ struct ContentView: View {
         }
     
     func startGame(_ number: Int) {
-        if (goal == 5 && questions[number] == 5) || ( goal == 10 && questions[number] == 10 ) || (goal == 20 && questions[number] == 20) {
+        if questions[number] == 5 {
+            goal1 = 5
+            countOfQuestions = 5
+            randomNumber = Int.random(in: 2...12)
+            question = "What is \(Int.random(in:2...range)) x \((randomNumber))?"
+        }
+        if  questions[number] == 10 {
+            randomNumber = Int.random(in: 2...12)
+            goal2 = 10
+            countOfQuestions = 10
+            question = "What is \( Int.random(in:2...range)) x \((randomNumber))?"
+        }
+        if  questions[number] == 20 {
+            goal3 = 20
+            countOfQuestions = 20
+            randomNumber = Int.random(in: 2...12)
+            question = "What is \(Int.random(in:2...range)) x \((randomNumber))?"
+        }
+startOfTheGame = true
+    }
+    func finalAnswer() {
+        let result = answer
+        if result == (range * randomNumber) {
+            errorTitle = "Correct"
+            showingAlert = true
+            score += 1
+            goal1 -= 1
+            goal2 -= 1
+            goal3 -= 1
+            countOfQuestions -= 1
+        } else if result != (range * randomNumber) {
+            errorTitle = "Inсorrect"
+            showingAlert = true
+            goal1 -= 1
+            goal2 -= 1
+            goal3 -= 1
+            countOfQuestions -= 1
+        }
+        if goal1 == 0 ||  goal2 == 0 || goal3 == 0 {
             endOfTheGame = true
         }
-        if questions[number] == 5 {
-            goal += 1
-            randomNumber = Int.random(in: 2...12)
-            question = "What is \(Int.random(in:2...range)) x \((randomNumber))?"
-        } else if  questions[number] == 10 {
-            goal += 1
-            randomNumber = Int.random(in: 2...12)
-            question = "What is \(Int.random(in:2...range)) x \((randomNumber))?"
-        } else if  questions[number] == 20 {
-            goal += 1
-            randomNumber = Int.random(in: 2...12)
-            question = "What is \(Int.random(in:2...range)) x \((randomNumber))?"
-        }
-        if answer == (range * randomNumber) {
-            showingAlert = true
-            errorTitle = "Correct"
-            score += 1
-        } else if answer != (range * randomNumber) {
-            showingAlert = true
-            errorTitle = "Incorrect"
-        }
+        answer = 0
     }
     func askNewQuestion() {
+        range = Int.random(in: 2...range)
         randomNumber = Int.random(in: 2...12)
-        question = ""
+        question = "What is \( Int.random(in:2...range)) x \((randomNumber))?"
     }
     func resetGame() {
-        randomNumber = Int.random(in: 2...12)
         question = ""
-        goal = 0
+       goal1 = -1
+       goal2 = -1
+        goal3 = -1
         score = 0
+        countOfQuestions = 0
+        startOfTheGame = false
     }
     func createBackground() -> some View {
         FluidGradient(blobs: [.red, .green, .blue],
@@ -233,3 +233,28 @@ struct ContentView_Previews: PreviewProvider {
 }
 
 
+//HStack {
+//    Spacer()
+//    Button {
+//        if range <= 12 || range >= 3 {
+//            range -= 1
+//        }
+//    } label: {
+//        Image(systemName: "minus.circle")
+//            .font(.system(size: 40))
+//
+//    }
+//    .disabled(goal1 == 4 || goal2 == 9 || goal3 == 19)
+//    Text("Up to \(range)")
+//
+//        Button {
+//            if range == 2 {
+//                range += 1
+//            }
+//        } label: {
+//            Image(systemName: "plus.circle")
+//                .font(.system(size: 40))
+//        }
+//        .disabled(goal1 == 4 || goal2 == 9 || goal3 == 19)
+//    Spacer()
+//}
